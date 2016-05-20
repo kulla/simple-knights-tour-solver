@@ -25,6 +25,16 @@ class Path:
         self.x = x # current x position of the knight
         self.y = y # current y position of the knight
 
+    @property
+    def positions(self):
+        "Returns a list of positions where the knight has been."
+        if self.tail:
+            result = self.tail.positions
+            result.append( (self.x, self.y) )
+            return result
+        else:
+            return []
+
 if __name__ == "__main__":
     print("== What is the size of the chess board? ==")
     print("Enter the size in the format nxm like '8x8' or '42x23'")
