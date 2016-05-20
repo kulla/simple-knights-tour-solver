@@ -1,5 +1,8 @@
 import re
 
+KNIGHT_STEPS = [ (2,1), (2,-1), (-2,1), (-2,-1),
+                 (1,2), (1,-2), (-1,2), (-1, -2)]
+
 class Chessboard:
 
     def __init__(self, n, m):
@@ -30,6 +33,19 @@ class Path:
         "Returns a list of positions where the knight has been."
         result = self.tail.positions if self.tail else []
         result.append( (self.x, self.y) )
+
+        return result
+
+    @property
+    def next_possible_positions(self):
+        result = map(lambda p: (self.x + p[0], self.y + p[1]), KNIGHT_STEPS)
+        result = filter(lambda p: (p[0] >= 0 and p[1] >= 0
+                                             and p[0] <= self.chessboard.n
+                                             and p[1] <= self.chessboard.m),
+                        result)
+
+        last_positions = self.positions
+        result = filter(lambda p: p not in last_positions, result)
 
         return result
 
