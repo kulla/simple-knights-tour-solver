@@ -47,7 +47,7 @@ class Path:
         last_positions = self.positions
         result = filter(lambda p: p not in last_positions, result)
 
-        return result
+        return list(result)
 
 if __name__ == "__main__":
     print("== What is the size of the chess board? ==")
