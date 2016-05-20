@@ -16,7 +16,7 @@ class Chessboard:
 
 class Path:
 
-    def __init__(self, chessboard, tail, x, y):
+    def __init__(self, chessboard, x, y, tail=None):
         assert 0 <= x and x <= chessboard.n
         assert 0 <= y and y <= chessboard.m
 
