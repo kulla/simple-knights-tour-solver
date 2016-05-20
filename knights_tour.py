@@ -14,6 +14,10 @@ class Chessboard:
         self.n = n
         self.m = m
 
+    @property
+    def number_fields(self):
+        return self.n * self.m
+
     def find_knights_tour(self, start_x, start_y):
         pass
 
