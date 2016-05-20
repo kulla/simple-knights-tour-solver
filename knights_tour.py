@@ -28,12 +28,10 @@ class Path:
     @property
     def positions(self):
         "Returns a list of positions where the knight has been."
-        if self.tail:
-            result = self.tail.positions
-            result.append( (self.x, self.y) )
-            return result
-        else:
-            return []
+        result = self.tail.positions if self.tail else []
+        result.append( (self.x, self.y) )
+
+        return result
 
 if __name__ == "__main__":
     print("== What is the size of the chess board? ==")
