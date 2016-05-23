@@ -1,4 +1,7 @@
+from itertools import *
+
 import re
+import sys
 
 KNIGHT_STEPS = [ (2,1), (2,-1), (-2,1), (-2,-1),
                  (1,2), (1,-2), (-1,2), (-1, -2)]
@@ -19,7 +22,9 @@ class Chessboard:
         return self.n * self.m
 
     def find_knights_tour(self, start_x, start_y):
-        pass
+        sys.setrecursionlimit(self.number_fields*10)
+
+        return Path(self, start_x, start_y).find_knights_tour()
 
 class Path:
 
@@ -57,15 +62,65 @@ class Path:
 
         return list(filter(lambda p: p not in last_positions, self.next_steps))
 
+    def is_knights_tour(self):
+        pos = self.positions
+
+        return (len(pos) == self.chessboard.number_fields
+                and pos[0] in self.next_steps)
+
+    def find_knights_tour(self):
+        if self.is_knights_tour():
+            return self
+        else:
+            print(len(self.positions))
+            next_steps = self.next_possible_positions
+            next_steps = list(map(lambda x: Path(self.chessboard,
+                                                 x[0], x[1], self),
+                                  next_steps))
+            next_steps.sort(key = lambda x: len(x.next_possible_positions))
+
+            for step in next_steps:
+                path = step.find_knights_tour()
+
+                if path:
+                    return path
+
+            return None
+
+    def print_path(self):
+        pos = {}
+        num = len("%d" % self.chessboard.number_fields)
+        form = "%" + str(num) + "d"
+
+        for p, n in zip(self.positions, count(1)):
+            pos[p] = n
+
+        print("-" * ((num+1) * self.chessboard.n + 1))
+
+        for y in range(self.chessboard.m):
+            for x in range(self.chessboard.n):
+                print("|", end="")
+                print(form % pos[(x,y)], end="")
+
+            print("|")
+            print("-" * (3 * self.chessboard.n + 1))
+
 if __name__ == "__main__":
-    print("== What is the size of the chess board? ==")
-    print("Enter the size in the format nxm like '8x8' or '42x23'")
-    print("")
+    try:
+        n = int(sys.argv[1])
+        m = int(sys.argv[2])
+        x = int(sys.argv[3])
+        y = int(sys.argv[4])
 
-    user_input = input("Size of chess board: ")
+        chessboard = Chessboard(n,m)
+        solution = chessboard.find_knights_tour(x,y)
 
-    n,m = map(int, re.match(r"(\d+)x(\d+)", user_input).groups())
-
-    chessboard = Chessboard(n,m)
-
-    chessboard.find_knights_tour(0,0)
+        if solution:
+            solution.print_path()
+        else:
+            print("Keine Lösung!")
+    except:
+        print("USAGE: python3 knights_tour.py [n] [m] [x] [y]")
+        print()
+        print("Chess board has size nxm and the start point is (x,y)")
+        print("with 0 <= x < n and 0 <= y < m.")
