@@ -41,17 +41,21 @@ class Path:
         return result
 
     @property
-    def next_possible_positions(self):
+    def next_steps(self):
         result = map(lambda p: (self.x + p[0], self.y + p[1]), KNIGHT_STEPS)
         result = filter(lambda p: (p[0] >= 0 and p[1] >= 0
-                                             and p[0] <= self.chessboard.n
-                                             and p[1] <= self.chessboard.m),
+                                             and p[0] < self.chessboard.n
+                                             and p[1] < self.chessboard.m),
                         result)
 
-        last_positions = self.positions
-        result = filter(lambda p: p not in last_positions, result)
-
         return list(result)
+
+
+    @property
+    def next_possible_positions(self):
+        last_positions = self.positions
+
+        return list(filter(lambda p: p not in last_positions, self.next_steps))
 
 if __name__ == "__main__":
     print("== What is the size of the chess board? ==")
